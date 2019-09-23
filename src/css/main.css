@@ -1,0 +1,63 @@
+/* 定義變數, 這邊都是顏色變數 */
+:root{
+    --primary-dark: #85005F; /* CSS的變數, 前面一定要--開頭, 命名不能底線 */ 
+    --primary-light: #FFD1EA;
+    --primary-light-2: #ff5fb7;
+    --primary-light-3: #ff008d;
+    --primary-light-4: #f7a8d3;
+    --primary-purple: #9c27b0;
+}
+
+body, input{
+    font-family: Microsoft JhengHei, sans-serif;
+    /* 讓整個網頁套用微軟正黑體 */
+    color: var(--primary-dark); /* 字體顏色 */
+}
+
+* {
+    box-sizing: border-box;
+}   
+
+.calc-main{
+    width: 20rem;
+    margin: 0 auto;
+    /* 讓這個區塊水平置中。 水平置中一定要給定寬度才作用。 */
+}
+
+.calc-main > .input-scope{
+    padding: 0.6rem; /* 內距 */
+}
+
+.calc-main > .input-scope > input{
+    padding: 0.3rem;
+    border: 1px solid var(--primary-light-2);/* 邊框 */
+    border-radius: 0.2rem; /* 邊框圓角 */
+    font-size: 1rem;
+    color: var(--primary-purple);
+}
+
+.calc-main > .button-scope{
+    padding: 0.6rem;
+}
+
+.calc-main > .button-scope >.button{
+    display: inline-block; /* 行內塊級元素 */
+    margin: 0.2rem;
+    padding: 0.5rem;
+    border: 1px solid var(--primary-light-3);
+    width: 4rem; /* 確保每一個按鈕一樣寬 */
+    text-align: center; /* 內容水平置中 */
+    cursor: pointer; /* 讓滑鼠移到上面鼠標會變 */
+    transition: 0.3s;
+}
+
+.calc-main > .button-scope >.button:hover{
+    border-color: var(--primary-light-3);
+}
+/*  1.--primary-light: #FFF;是宣告並定義變數。var() 是套用變數值
+    2.padding是內距，border是外框，margin是外距 
+    3.內距就是邊框和元素內容的距離，外距就是和其他元素的距離 
+    4.width是藍色(本身寬度)，boder-box的話，width是藍綠橘=元素寬度藍綠橘
+    5.hover是滑鼠移上去時讓css樣式變化。通常會搭配transition(?。transiton是元素屬性發生變化時，要花幾秒去完成，所以就能構成滑鼠移上去，邊框顏色逐漸變深的效果
+    6.定義在:root裡的變數就等於整個網頁都能用(?
+*/
