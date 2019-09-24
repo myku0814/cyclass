@@ -17,15 +17,17 @@ function init(el){
     function button_listener(e){
         let ctr = this.getAttribute('data-ctr'); //按下+按鈕的時候，取得data-ctr會取到什麼?。this指向被按的按鈕，這行即說取得被按的按鈕的data-ctr
         switch(ctr){
-            case "CE":
+            case "CE":{
                 input.value = "";
                 break;
+            }
             case "=":{
                 input.value = calculate(input.value);
                 break;
             }
-            default:
+            default:{
                 input.value += ctr;
+            }
         }
     }
 //事件監聽函數。參數為e(event), 按按鈕顯示值在input
@@ -65,21 +67,29 @@ function weight(c){
 }
 //賦予c的權重
 function isNumChar(c){
-    if(c == 0 || c == 1 || c == 2 || c ==3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 9){
-        return true;
-    }
+    return !isNaN(parseFloat(c));
 }
-//c是否為數字的字元
+//c是否為數字的字元，(c == 0 || c == 1 || c == 2 || c ==3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 9)
 function calculate(str){
     let stack = [];
-    let postFix = [];
+    let postFix = []; //存後序式的array
+    let tmp = ""; //暫存
     for(let i=0; i<str.length; ++i){
         let c = str.charAt(i);
         if(isNumChar(c)){
-            postFix.push(c);
+            tmp += c; //利用暫存將多位數串成字串
         }
-        //c放入postFix;
+        //c放入postFix
+        else if(c == "."){
+            tmp +=c;
+        }
+        //小數情況
         else if(c == ")"){
+            if(tmp != ""){
+                postFix.push(tmp);
+                tmp = "";
+            }
+            //判斷tmp是否為空字串。舉例，第一個字是左刮號，postFix裡就多一個空字串，這種事不能出現w
             while(stack[stack.length - 1] != "("){
                 postFix.push(stack[stack.length - 1]);
                 stack.pop();
@@ -88,6 +98,10 @@ function calculate(str){
         }
         //stack的top放入postFix;
         else{
+            if(tmp != ""){
+                postFix.push(tmp);
+                tmp = "";
+            }
             while(weight(c) <= weight(stack[stack.length - 1]) && stack[stack.length - 1] != "("){
                 postFix.push(stack[stack.length - 1]);
                 stack.pop();
@@ -97,10 +111,16 @@ function calculate(str){
         // c是")"以外的其他運算子
         // "("是例外，在stack內部實權重最小
     }
+    if(tmp != ""){
+        postFix.push(tmp);
+        tmp = "";
+    }
+    //假設字串尾是數字，temp會有值但沒放進去。因為只有「遇到非數字」，temp才會被放進去。但假如算式尾是數字，它就沒機會遇到非數字了。
     while(stack.length != 0){
         postFix.push(stack[stack.length - 1]);
         stack.pop();
     }
+    console.log(postFix);
     //stack還沒空，把stack的top放入postFix
     let stk = [];
     for(let i=0; i<postFix.length; ++i){
@@ -192,4 +212,33 @@ ready();
 //    break;                                     stk.pop();
 //                                               stk.push(c);
 //                                               break;
-// 18.
+// 18.簡單說就是遍歷迴圈，forEach的參數是一個function，那個參數會從第一個元素開始，每次都被呼叫。也就是把陣列每一個值丟進去function跑，然後function的參數是被定義好的，因為是forEach本身去呼叫那個參數，第一個參數是元素本身，第二個參數是元素在ary的index
+//    for (let i=0; i<ary.length; ++i){        同義於      ary.forEach(function(p, i){
+//            let p = ary[i];                                  // do something
+//    }                                                    });
+// 20.其實js的function有一個簡化語法，叫箭頭函數
+//    ary.forEach(function(p){                 同義於      ary.forEach(p => {
+          // do something                                      // do something
+//    });                                                  });
+// 21.continue就是跳過那輪迴圈的意思
+// 22.像forEach()、find()這種傳函數進去的，有個名詞叫回調函數(callback function)，forEach的回傳值是完全沒有意義，簡單說不會拿來作任何事，find()的回調函數是，如果回傳true就表示找到了，false就表示繼續找。
+// 23.有個函數叫filter()，就是過濾。回調函數回傳false的時候，就表示那個值不要了。true就是留下來。
+// 24.function add(a, b){                       同義於      let add = (a, b) => a+b;  //沒大括弧就是回傳值
+//       return a+b;
+//    }
+// 25.map就是把陣列的值都換成新的，然後回傳一個新陣列。回調函數的回傳值就是新的值
+// 26.every()就是回調函數每個都回傳true的話，才會回傳true
+// 27.some就和every類似，簡單說就是至少一個符合，就會回傳true
+// 28.多位數計算機其實很簡單(?簡單說就是先把數字用字串相加的方式串起來。用一個暫存的字串用來放正在串接的數字，每次遇到數字就把數字串上去。遇到運算子再把這個暫存字串放進postFix，然後把暫存字串出始化
+//    舉個例，比放說123+23   let str = ""; //暫存字串，初始化就是空字串。迴圈首先遇到1，把1串上去。str = "1"。再來2和3分別串上去，str = "123"。然後遇到"+"了，不是數字，於是把str放進postFix，然後讓str變回""。
+// 29.可以理解成所有進來的參數會是一個陣列。從最基本的來說，就是每個fuction()內部都有一個保留字可以存取，叫arguments。arguments是類似陣列（但不是Array）的東西。只是你也不用宣告，只要函數執行，內部就存取得到arguments。
+// 30.保留字就是語法中定義的字。保留字簡單說就是不能隨便拿來當變數名稱。
+// 31.從arguments(簡稱args)的角度來理解，
+// 32.新語法spread operator。ES6 加入了新的運算子"..."Spread Operator，簡化了展開陣列的過程，應用上真的非常廣，像是取值、複製、合併、轉換型態、取代舊式 API...等等，這些都改善或簡化了 JavaScript 的邏輯程序，讓程式有了更多元的發展。
+// 33.function f(a, b, theArgs){//做什麼}。 其中a是args[0]、b是args[1]、theArgs是args[2]~args[args.length-1]
+// 34.反正可以先給你一個題目：寫一個function digitLenght(str)，str是一個數字的字串，例如"123.45"。這個函數會回傳str的小數長度，請利用String.split()實現這個函數。
+// 35.標準三步驟就是：
+//    1. git add --all  //簡單說就是掃描所有文件和資料夾（除了被gitignore忽略的），找到有改動的並把改了什麼記錄下來
+//    2. git commit -m "隨便你要打什麼" //版本簡述
+//    3. git push
+// 36.
