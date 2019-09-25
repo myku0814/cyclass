@@ -17,6 +17,12 @@ function init(el){
     function button_listener(e){
         let ctr = this.getAttribute('data-ctr'); //按下+按鈕的時候，取得data-ctr會取到什麼?。this指向被按的按鈕，這行即說取得被按的按鈕的data-ctr
         switch(ctr){
+            case ".":{
+                if(input.value.charAt(input.value.length - 1) != "."){
+                    input.value += ctr;
+                    break;
+                }
+            }
             case "CE":{
                 input.value = "";
                 break;
